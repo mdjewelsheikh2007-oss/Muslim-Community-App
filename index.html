@@ -18,17 +18,50 @@
     <a href="#" style="color:white;text-decoration:none">Profile</a>
   </div>
 
-  <div style="padding:15px">
-    <h3>Islamic Feed</h3>
+  <div id="quran" style="padding:15px">
+  <h3>📖 Al Quran</h3>
 
-    <div style="background:white;padding:10px;border-radius:8px;margin-bottom:10px">
-      📿 Pray Salah on time
-    </div>
+  <select id="lang" onchange="loadSurah()" style="width:100%;padding:8px;margin-bottom:10px">
+    <option value="ar">Arabic</option>
+    <option value="bn">Bangla</option>
+    <option value="en">English</option>
+    <option value="ur">Urdu</option>
+    <option value="hi">Hindi</option>
+    <option value="fr">French</option>
+    <option value="es">Spanish</option>
+  </select>
 
-    <div style="background:white;padding:10px;border-radius:8px;filter:blur(5px)">
-      Opposite gender content (blurred)
-    </div>
+  <select id="surah" onchange="loadSurah()" style="width:100%;padding:8px;margin-bottom:10px">
+    <option value="1">Al-Fatiha</option>
+    <option value="2">Al-Baqarah</option>
+    <option value="3">Aal-E-Imran</option>
+    <option value="4">An-Nisa</option>
+    <option value="5">Al-Ma'idah</option>
+  </select>
+
+  <div id="quranText" style="background:white;padding:12px;border-radius:8px;line-height:1.8">
+    Loading Quran...
   </div>
+</div>
+
+<script>
+function loadSurah(){
+  let lang = document.getElementById("lang").value;
+  let surah = document.getElementById("surah").value;
+
+  fetch(`https://api.alquran.cloud/v1/surah/${surah}/${lang}`)
+    .then(res => res.json())
+    .then(data => {
+      let text = "";
+      data.data.ayahs.forEach(a => {
+        text += a.text + "<br><br>";
+      });
+      document.getElementById("quranText").innerHTML = text;
+    });
+}
+
+loadSurah();
+</script>
 
 </body>
 </html>
