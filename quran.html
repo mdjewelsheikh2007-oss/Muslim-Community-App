@@ -87,26 +87,19 @@ let surah = s.value;
 let lang = document.getElementById("lang").value;
 
 Promise.all([
-fetch(`https://api.alquran.cloud/v1/surah/${surah}/quran-uthmani`).then(r=>r.json()),
+fetch(`https://api.alquran.cloud/v1/surah/${surah}/ar.alafasy`).then(r=>r.json()),
 fetch(`https://api.alquran.cloud/v1/surah/${surah}/${lang}`).then(r=>r.json())
 ]).then(([ar,tr])=>{
 let html="";
 ar.data.ayahs.forEach((a,i)=>{
-let ayahNo = String(surah).padStart(3,'0') + String(i+1).padStart(3,'0');
 html+=`
-<div class="ayah-box">
-  <div class="ar">${a.text}</div>
-  <div class="tr">${tr.data.ayahs[i].text}</div>
+<div class="ar">${a.text}</div>
+<div class="tr">${tr.data.ayahs[i].text}</div>
 
-  <audio controls>
-    <source src="https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayahNo}.mp3">
-  </audio>
-
-  <audio controls>
-    <source src="https://cdn.islamic.network/quran/audio/128/${lang}/${ayahNo}.mp3">
-  </audio>
-</div>
-`;
+<audio controls style="width:100%;margin:10px 0">
+  <source src="${a.audio}" type="audio/mpeg">
+</audio>
+<hr>`;
 });
 document.getElementById("ayah").innerHTML=html;
 });
