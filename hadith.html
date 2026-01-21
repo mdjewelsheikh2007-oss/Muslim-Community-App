@@ -1,73 +1,49 @@
-const DATA = {
-  bukhari: {
-    name: "Sahih Bukhari",
-    chapters: {
-      iman: {
-        name: "Kitab al-Iman",
-        hadiths: [
-          {
-            ar: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-            bn: "নিশ্চয়ই সব কাজ নিয়তের উপর নির্ভরশীল।",
-            en: "Actions are judged by intentions."
-          }
-        ]
-      }
-    }
-  },
-  muslim: {
-    name: "Sahih Muslim",
-    chapters: {
-      iman: {
-        name: "Kitab al-Iman",
-        hadiths: [
-          {
-            ar: "الدِّينُ يُسْرٌ",
-            bn: "দ্বীন সহজ।",
-            en: "Religion is easy."
-          }
-        ]
-      }
-    }
-  }
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hadith | Muslim Community</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const bookSelect = document.getElementById("bookSelect");
-const chapterSelect = document.getElementById("chapterSelect");
-const hadithList = document.getElementById("hadithList");
+<header class="top">
+    🕌 Muslim Community
+</header>
 
-function loadBooks(){
-  for(let key in DATA){
-    bookSelect.innerHTML += `<option value="${key}">${DATA[key].name}</option>`;
-  }
-  loadChapters();
-}
+<nav class="menu">
+    <a href="index.html">Home</a>
+    <a href="quran.html">Quran</a>
+    <a class="active" href="hadith.html">Hadith</a>
+</nav>
 
-function loadChapters(){
-  chapterSelect.innerHTML = "";
-  const book = DATA[bookSelect.value];
-  for(let ch in book.chapters){
-    chapterSelect.innerHTML += `<option value="${ch}">${book.chapters[ch].name}</option>`;
-  }
-  loadHadiths();
-}
+<main class="container">
 
-function loadHadiths(){
-  hadithList.innerHTML = "";
-  const book = DATA[bookSelect.value];
-  const chapter = book.chapters[chapterSelect.value];
+    <h2>📘 Hadith Collection</h2>
 
-  chapter.hadiths.forEach(h=>{
-    hadithList.innerHTML += `
-      <div class="card">
-        <div class="ar">${h.ar}</div>
-        <div class="bn">${h.bn}</div>
-        <div class="en">${h.en}</div>
-      </div>
-    `;
-  });
-}
+    <!-- Book Select -->
+    <select id="bookSelect">
+        <option value="bukhari">Sahih Bukhari</option>
+    </select>
 
-bookSelect.onchange = loadChapters;
-chapterSelect.onchange = loadHadiths;
+    <!-- Chapter Select -->
+    <select id="chapterSelect">
+        <option>Loading chapters...</option>
+    </select>
 
-loadBooks();
+    <!-- Language -->
+    <select id="langSelect">
+        <option value="ar">Arabic</option>
+        <option value="bn">Bangla</option>
+        <option value="en">English</option>
+    </select>
+
+    <!-- Hadith List -->
+    <div id="hadithList" class="card"></div>
+
+</main>
+
+<script src="hadith.js"></script>
+</body>
+</html>
