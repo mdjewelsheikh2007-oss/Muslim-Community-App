@@ -1,65 +1,79 @@
-const chapterSelect = document.getElementById("chapterSelect");
-const hadithList = document.getElementById("hadithList");
-const langSelect = document.getElementById("langSelect");
-
-/*
- আমরা এখানে PUBLIC + TRUSTED API ব্যবহার করছি
- Arabic একদম নিখুঁত
- Bangla + English সাপোর্ট করে
-*/
-
-const API_BASE = "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions";
-
-// Sahih Bukhari editions
-const EDITIONS = {
-    ar: "ara-bukhari",
-    en: "eng-bukhari",
-    bn: "ben-bukhari"
+const DATA = {
+  bukhari: {
+    name: "Sahih Bukhari",
+    chapters: [
+      {
+        id: "iman",
+        name: "Kitab al-Iman",
+        hadiths: [
+          {
+            ar: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+            bn: "নিশ্চয়ই সকল কাজ নিয়তের উপর নির্ভরশীল।",
+            en: "Actions are judged by intentions."
+          }
+        ]
+      },
+      {
+        id: "ilm",
+        name: "Kitab al-Ilm",
+        hadiths: [
+          {
+            ar: "طَلَبُ الْعِلْمِ فَرِيضَةٌ",
+            bn: "জ্ঞান অর্জন করা ফরজ।",
+            en: "Seeking knowledge is obligatory."
+          }
+        ]
+      }
+    ]
+  }
 };
 
-// Load chapter list
-async function loadChapters() {
-    const res = await fetch(`${API_BASE}/eng-bukhari.json`);
-    const data = await res.json();
+const bookSelect = document.getElementById("bookSelect");
+const chapterSelect = document.getElementById("chapterSelect");
+const hadithList = document.getElementById("hadithList");
 
-    chapterSelect.innerHTML = "";
-    data.metadata.sections.forEach(sec => {
-        const opt = document.createElement("option");
-        opt.value = sec.section;
-        opt.textContent = sec.sectionTitle;
-        chapterSelect.appendChild(opt);
-    });
-
-    loadHadiths();
+function loadBooks() {
+  bookSelect.innerHTML = "";
+  for (let key in DATA) {
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.textContent = DATA[key].name;
+    bookSelect.appendChild(opt);
+  }
+  loadChapters();
 }
 
-// Load hadiths
-async function loadHadiths() {
-    const lang = langSelect.value;
-    const chapter = chapterSelect.value;
-
-    hadithList.innerHTML = "Loading hadiths...";
-
-    const res = await fetch(`${API_BASE}/${EDITIONS[lang]}.json`);
-    const data = await res.json();
-
-    const filtered = data.hadiths.filter(h => h.section === chapter);
-
-    hadithList.innerHTML = "";
-
-    filtered.forEach(h => {
-        const div = document.createElement("div");
-        div.className = "hadith";
-
-        div.innerHTML = `
-            <p class="hadith-text">${h.text}</p>
-            <hr>
-        `;
-        hadithList.appendChild(div);
-    });
+function loadChapters() {
+  chapterSelect.innerHTML = "";
+  const book = DATA[bookSelect.value];
+  book.chapters.forEach(ch => {
+    const opt = document.createElement("option");
+    opt.value = ch.id;
+    opt.textContent = ch.name;
+    chapterSelect.appendChild(opt);
+  });
+  loadHadiths();
 }
 
+function loadHadiths() {
+  hadithList.innerHTML = "";
+  const book = DATA[bookSelect.value];
+  const chapter = book.chapters.find(
+    c => c.id === chapterSelect.value
+  );
+
+  chapter.hadiths.forEach(h => {
+    hadithList.innerHTML += `
+      <div class="card">
+        <div class="arabic">${h.ar}</div>
+        <div class="bangla">${h.bn}</div>
+        <div class="english">${h.en}</div>
+      </div>
+    `;
+  });
+}
+
+bookSelect.onchange = loadChapters;
 chapterSelect.onchange = loadHadiths;
-langSelect.onchange = loadHadiths;
 
-loadChapters();
+loadBooks();
