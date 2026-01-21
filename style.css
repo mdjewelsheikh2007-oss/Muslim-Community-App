@@ -86,3 +86,29 @@ li {
     font-size: 18px;
     line-height: 1.8;
 }
+.card {
+  background: white;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+
+.arabic {
+  font-size: 22px;
+  direction: rtl;
+  margin-bottom: 8px;
+}
+
+.english {
+  color: #333;
+}
+
+#loadMore {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #0b5e4b;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+}
