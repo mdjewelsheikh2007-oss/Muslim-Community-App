@@ -6,50 +6,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f5f5f5;
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f2f2f2;
 }
-header {
-  background: #0b5f4b;
-  color: white;
-  padding: 15px;
-  text-align: center;
-  font-size: 20px;
+header{
+  background:#0a4d3c;
+  color:white;
+  text-align:center;
+  padding:15px;
 }
-.container {
-  padding: 15px;
+select,input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
 }
-select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 16px;
+.container{
+  padding:15px;
 }
-.hadith-card {
-  background: white;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
+.card{
+  background:white;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:15px;
 }
-.arabic {
-  font-size: 22px;
-  text-align: right;
-  direction: rtl;
+.ar{
+  font-size:22px;
+  direction:rtl;
+  text-align:right;
+  line-height:2;
 }
-.translation {
-  margin-top: 10px;
-  font-size: 16px;
+.bn,.en{
+  margin-top:10px;
 }
-.meta {
-  margin-top: 8px;
-  font-size: 13px;
-  color: gray;
+audio{
+  width:100%;
+  margin-top:10px;
 }
-audio {
-  width: 100%;
-  margin-top: 10px;
+hr{
+  margin:15px 0;
 }
 </style>
 </head>
@@ -57,89 +53,114 @@ audio {
 <body>
 
 <header>
-📚 Hadith Collection
+  <h2>📜 Hadith Library</h2>
 </header>
 
 <div class="container">
 
-<select id="bookSelect" onchange="loadHadiths()">
-  <option value="bukhari">Sahih al-Bukhari</option>
+<input type="text" id="search" placeholder="🔍 Search Hadith..." onkeyup="searchHadith()">
+
+<select id="book" onchange="loadHadith()">
+  <option value="bukhari">Sahih Bukhari</option>
   <option value="muslim">Sahih Muslim</option>
-  <option value="abudawud">Sunan Abu Dawood</option>
+  <option value="abu_dawud">Sunan Abu Dawud</option>
   <option value="tirmidhi">Jami` at-Tirmidhi</option>
-  <option value="nasai">Sunan an-Nasa’i</option>
-  <option value="ibnmajah">Sunan Ibn Majah</option>
+  <option value="nasai">Sunan an-Nasa'i</option>
+  <option value="ibn_majah">Sunan Ibn Majah</option>
 </select>
 
-<select id="langSelect" onchange="loadHadiths()">
-  <option value="bn">Bangla</option>
-  <option value="en">English</option>
-  <option value="ur">Urdu</option>
-  <option value="hi">Hindi</option>
-</select>
-
-<div id="hadithContainer"></div>
+<div id="hadithArea"></div>
 
 </div>
 
 <script>
-const hadithData = {
-  bukhari: [
-    {
-      arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-      translations: {
-        bn: "নিশ্চয়ই সকল কাজ নিয়তের উপর নির্ভরশীল।",
-        en: "Actions are judged by intentions.",
-        ur: "اعمال کا دار و مدار نیتوں پر ہے۔",
-        hi: "निश्चय ही कर्मों का आधार नीयत है।"
-      },
-      ref: "Sahih al-Bukhari • Kitab al-Wahy • Hadith 1",
-      audio: "https://cdn.islamic.network/hadith/audio/bukhari_1.mp3"
-    }
-  ],
+const DATA = {
+bukhari:[
+{
+ar:"إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+bn:"নিশ্চয়ই সব কাজ নিয়তের উপর নির্ভরশীল।",
+en:"Actions are judged by intentions.",
+audio:"https://cdn.islamic.network/hadith/audio/bukhari1.mp3"
+},
+{
+ar:"الدِّينُ يُسْرٌ",
+bn:"নিশ্চয়ই দ্বীন সহজ।",
+en:"Religion is easy.",
+audio:""
+}
+],
 
-  muslim: [
-    {
-      arabic: "الدِّينُ يُسْرٌ",
-      translations: {
-        bn: "দ্বীন সহজ।",
-        en: "Religion is easy.",
-        ur: "دین آسان ہے۔",
-        hi: "धर्म आसान है।"
-      },
-      ref: "Sahih Muslim • Kitab al-Iman",
-      audio: ""
-    }
-  ],
+muslim:[
+{
+ar:"مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ",
+bn:"যে ভালো কাজের পথে দিকনির্দেশনা দেয়, সে কাজকারীর সমপরিমাণ সওয়াব পায়।",
+en:"Whoever guides to good gets a reward like the doer.",
+audio:""
+}
+],
 
-  abudawud: [],
-  tirmidhi: [],
-  nasai: [],
-  ibnmajah: []
+abu_dawud:[
+{
+ar:"لاَ ضَرَرَ وَلاَ ضِرَارَ",
+bn:"ক্ষতি করা ও ক্ষতির প্রতিদান নেই।",
+en:"There should be neither harming nor reciprocating harm.",
+audio:""
+}
+],
+
+tirmidhi:[
+{
+ar:"الطُّهُورُ شَطْرُ الإِيمَانِ",
+bn:"পবিত্রতা ঈমানের অর্ধেক।",
+en:"Purity is half of faith.",
+audio:""
+}
+],
+
+nasai:[
+{
+ar:"الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ",
+bn:"দয়ালুর প্রতি রহমান দয়া করেন।",
+en:"The Merciful shows mercy to those who are merciful.",
+audio:""
+}
+],
+
+ibn_majah:[
+{
+ar:"طَلَبُ الْعِلْمِ فَرِيضَةٌ",
+bn:"জ্ঞান অর্জন করা ফরজ।",
+en:"Seeking knowledge is obligatory.",
+audio:""
+}
+]
 };
 
-function loadHadiths() {
-  const book = bookSelect.value;
-  const lang = langSelect.value;
-  const container = document.getElementById("hadithContainer");
-  container.innerHTML = "";
+function loadHadith(){
+const book=document.getElementById("book").value;
+const area=document.getElementById("hadithArea");
+area.innerHTML="";
 
-  hadithData[book].forEach(h => {
-    const card = document.createElement("div");
-    card.className = "hadith-card";
-
-    card.innerHTML = `
-      <div class="arabic">${h.arabic}</div>
-      <div class="translation">${h.translations[lang]}</div>
-      <div class="meta">${h.ref}</div>
-      ${h.audio ? `<audio controls src="${h.audio}"></audio>` : ""}
-    `;
-
-    container.appendChild(card);
-  });
+DATA[book].forEach(h=>{
+area.innerHTML+=`
+<div class="card">
+  <div class="ar">${h.ar}</div>
+  <div class="bn">📘 ${h.bn}</div>
+  <div class="en">📗 ${h.en}</div>
+  ${h.audio ? `<audio controls src="${h.audio}"></audio>` : ""}
+</div>
+`;
+});
 }
 
-loadHadiths();
+function searchHadith(){
+const q=document.getElementById("search").value.toLowerCase();
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
+});
+}
+
+loadHadith();
 </script>
 
 </body>
