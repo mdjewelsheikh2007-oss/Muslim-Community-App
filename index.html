@@ -2,66 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Muslim Community App</title>
+  <title>Muslim Community</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: #0f5c4c;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #1aa188;
+    }
+
+    nav a {
+      padding: 12px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      background: #0f5c4c;
+    }
+
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+  </style>
 </head>
-<body style="font-family: Arial; background:#f2f2f2; margin:0">
 
-  <div style="background:#0a4d3c;color:white;padding:15px;text-align:center">
-    <h2>🕌 Muslim Community</h2>
+<body>
+
+  <!-- Header -->
+  <header>
+    🕌 Muslim Community
+  </header>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="quran.html">Quran</a>
+    <a href="hadith.html">Hadith</a>
+    <a href="#">Profile</a>
+  </nav>
+
+  <!-- Home Content -->
+  <div class="container">
+
+    <div class="card">
+      <h2>Welcome</h2>
+      <p>
+        This is an Islamic community platform where you can read
+        the Holy Quran in multiple languages and authentic Hadith
+        from major Hadith collections.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Features</h3>
+      <ul style="text-align:left;">
+        <li>📖 Al Quran (Arabic + Translation)</li>
+        <li>🎧 Quran Audio (where available)</li>
+        <li>📚 Six Major Hadith Books</li>
+        <li>🔐 Privacy & Islamic Moderation</li>
+      </ul>
+    </div>
+
   </div>
-
-  <div style="display:flex;justify-content:space-around;background:#128c7e;padding:10px">
-    <a href="#" style="color:white;text-decoration:none">Home</a>
-    <a href="quran.html" style="color:white;text-decoration:none">Quran</a>
-    <a href="#" style="color:white;text-decoration:none">Hadith</a>
-    <a href="#" style="color:white;text-decoration:none">Profile</a>
-  </div>
-
-  <div id="quran" style="padding:15px">
-  <h3>📖 Al Quran</h3>
-
-  <select id="lang" onchange="loadSurah()" style="width:100%;padding:8px;margin-bottom:10px">
-    <option value="ar">Arabic</option>
-    <option value="bn">Bangla</option>
-    <option value="en">English</option>
-    <option value="ur">Urdu</option>
-    <option value="hi">Hindi</option>
-    <option value="fr">French</option>
-    <option value="es">Spanish</option>
-  </select>
-
-  <select id="surah" onchange="loadSurah()" style="width:100%;padding:8px;margin-bottom:10px">
-    <option value="1">Al-Fatiha</option>
-    <option value="2">Al-Baqarah</option>
-    <option value="3">Aal-E-Imran</option>
-    <option value="4">An-Nisa</option>
-    <option value="5">Al-Ma'idah</option>
-  </select>
-
-  <div id="quranText" style="background:white;padding:12px;border-radius:8px;line-height:1.8">
-    Loading Quran...
-  </div>
-</div>
-
-<script>
-function loadSurah(){
-  let lang = document.getElementById("lang").value;
-  let surah = document.getElementById("surah").value;
-
-  fetch(`https://api.alquran.cloud/v1/surah/${surah}/${lang}`)
-    .then(res => res.json())
-    .then(data => {
-      let text = "";
-      data.data.ayahs.forEach(a => {
-        text += a.text + "<br><br>";
-      });
-      document.getElementById("quranText").innerHTML = text;
-    });
-}
-
-loadSurah();
-</script>
 
 </body>
 </html>
