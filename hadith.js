@@ -1,79 +1,40 @@
-const DATA = {
-  bukhari: {
-    name: "Sahih Bukhari",
-    chapters: [
-      {
-        id: "iman",
-        name: "Kitab al-Iman",
-        hadiths: [
-          {
-            ar: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-            bn: "নিশ্চয়ই সকল কাজ নিয়তের উপর নির্ভরশীল।",
-            en: "Actions are judged by intentions."
-          }
-        ]
-      },
-      {
-        id: "ilm",
-        name: "Kitab al-Ilm",
-        hadiths: [
-          {
-            ar: "طَلَبُ الْعِلْمِ فَرِيضَةٌ",
-            bn: "জ্ঞান অর্জন করা ফরজ।",
-            en: "Seeking knowledge is obligatory."
-          }
-        ]
-      }
-    ]
-  }
-};
+let start = 1;
+let limit = 20;
+let loading = false;
 
-const bookSelect = document.getElementById("bookSelect");
-const chapterSelect = document.getElementById("chapterSelect");
 const hadithList = document.getElementById("hadithList");
+const loadMoreBtn = document.getElementById("loadMore");
 
-function loadBooks() {
-  bookSelect.innerHTML = "";
-  for (let key in DATA) {
-    const opt = document.createElement("option");
-    opt.value = key;
-    opt.textContent = DATA[key].name;
-    bookSelect.appendChild(opt);
-  }
-  loadChapters();
+function loadHadith() {
+  if (loading) return;
+  loading = true;
+
+  const end = start + limit - 1;
+  const url = `https://api.hadith.gading.dev/books/bukhari?range=${start}-${end}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      data.data.hadiths.forEach(h => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <div class="arabic">${h.arab}</div>
+          <div class="english">${h.id}</div>
+        `;
+        hadithList.appendChild(div);
+      });
+
+      start += limit;
+      loading = false;
+    })
+    .catch(err => {
+      console.error(err);
+      loading = false;
+    });
 }
 
-function loadChapters() {
-  chapterSelect.innerHTML = "";
-  const book = DATA[bookSelect.value];
-  book.chapters.forEach(ch => {
-    const opt = document.createElement("option");
-    opt.value = ch.id;
-    opt.textContent = ch.name;
-    chapterSelect.appendChild(opt);
-  });
-  loadHadiths();
-}
+loadMoreBtn.addEventListener("click", loadHadith);
 
-function loadHadiths() {
-  hadithList.innerHTML = "";
-  const book = DATA[bookSelect.value];
-  const chapter = book.chapters.find(
-    c => c.id === chapterSelect.value
-  );
-
-  chapter.hadiths.forEach(h => {
-    hadithList.innerHTML += `
-      <div class="card">
-        <div class="arabic">${h.ar}</div>
-        <div class="bangla">${h.bn}</div>
-        <div class="english">${h.en}</div>
-      </div>
-    `;
-  });
-}
-
-bookSelect.onchange = loadChapters;
-chapterSelect.onchange = loadHadiths;
-
-loadBooks();
+// Initial load
+loadHadith();
