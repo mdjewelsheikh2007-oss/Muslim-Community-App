@@ -1,167 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Hadith Collection</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f2f2f2;
-}
-header{
-  background:#0a4d3c;
-  color:white;
-  text-align:center;
-  padding:15px;
-}
-select,input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-}
-.container{
-  padding:15px;
-}
-.card{
-  background:white;
-  padding:15px;
-  border-radius:8px;
-  margin-bottom:15px;
-}
-.ar{
-  font-size:22px;
-  direction:rtl;
-  text-align:right;
-  line-height:2;
-}
-.bn,.en{
-  margin-top:10px;
-}
-audio{
-  width:100%;
-  margin-top:10px;
-}
-hr{
-  margin:15px 0;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <h2>📜 Hadith Library</h2>
-</header>
-
-<div class="container">
-
-<input type="text" id="search" placeholder="🔍 Search Hadith..." onkeyup="searchHadith()">
-
-<select id="book" onchange="loadHadith()">
-  <option value="bukhari">Sahih Bukhari</option>
-  <option value="muslim">Sahih Muslim</option>
-  <option value="abu_dawud">Sunan Abu Dawud</option>
-  <option value="tirmidhi">Jami` at-Tirmidhi</option>
-  <option value="nasai">Sunan an-Nasa'i</option>
-  <option value="ibn_majah">Sunan Ibn Majah</option>
-</select>
-
-<div id="hadithArea"></div>
-
-</div>
-
-<script>
 const DATA = {
-bukhari:[
-{
-ar:"إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-bn:"নিশ্চয়ই সব কাজ নিয়তের উপর নির্ভরশীল।",
-en:"Actions are judged by intentions.",
-audio:"https://cdn.islamic.network/hadith/audio/bukhari1.mp3"
-},
-{
-ar:"الدِّينُ يُسْرٌ",
-bn:"নিশ্চয়ই দ্বীন সহজ।",
-en:"Religion is easy.",
-audio:""
-}
-],
-
-muslim:[
-{
-ar:"مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ",
-bn:"যে ভালো কাজের পথে দিকনির্দেশনা দেয়, সে কাজকারীর সমপরিমাণ সওয়াব পায়।",
-en:"Whoever guides to good gets a reward like the doer.",
-audio:""
-}
-],
-
-abu_dawud:[
-{
-ar:"لاَ ضَرَرَ وَلاَ ضِرَارَ",
-bn:"ক্ষতি করা ও ক্ষতির প্রতিদান নেই।",
-en:"There should be neither harming nor reciprocating harm.",
-audio:""
-}
-],
-
-tirmidhi:[
-{
-ar:"الطُّهُورُ شَطْرُ الإِيمَانِ",
-bn:"পবিত্রতা ঈমানের অর্ধেক।",
-en:"Purity is half of faith.",
-audio:""
-}
-],
-
-nasai:[
-{
-ar:"الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ",
-bn:"দয়ালুর প্রতি রহমান দয়া করেন।",
-en:"The Merciful shows mercy to those who are merciful.",
-audio:""
-}
-],
-
-ibn_majah:[
-{
-ar:"طَلَبُ الْعِلْمِ فَرِيضَةٌ",
-bn:"জ্ঞান অর্জন করা ফরজ।",
-en:"Seeking knowledge is obligatory.",
-audio:""
-}
-]
+  bukhari: {
+    name: "Sahih Bukhari",
+    chapters: {
+      iman: {
+        name: "Kitab al-Iman",
+        hadiths: [
+          {
+            ar: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+            bn: "নিশ্চয়ই সব কাজ নিয়তের উপর নির্ভরশীল।",
+            en: "Actions are judged by intentions."
+          }
+        ]
+      }
+    }
+  },
+  muslim: {
+    name: "Sahih Muslim",
+    chapters: {
+      iman: {
+        name: "Kitab al-Iman",
+        hadiths: [
+          {
+            ar: "الدِّينُ يُسْرٌ",
+            bn: "দ্বীন সহজ।",
+            en: "Religion is easy."
+          }
+        ]
+      }
+    }
+  }
 };
 
-function loadHadith(){
-const book=document.getElementById("book").value;
-const area=document.getElementById("hadithArea");
-area.innerHTML="";
+const bookSelect = document.getElementById("bookSelect");
+const chapterSelect = document.getElementById("chapterSelect");
+const hadithList = document.getElementById("hadithList");
 
-DATA[book].forEach(h=>{
-area.innerHTML+=`
-<div class="card">
-  <div class="ar">${h.ar}</div>
-  <div class="bn">📘 ${h.bn}</div>
-  <div class="en">📗 ${h.en}</div>
-  ${h.audio ? `<audio controls src="${h.audio}"></audio>` : ""}
-</div>
-`;
-});
+function loadBooks(){
+  for(let key in DATA){
+    bookSelect.innerHTML += `<option value="${key}">${DATA[key].name}</option>`;
+  }
+  loadChapters();
 }
 
-function searchHadith(){
-const q=document.getElementById("search").value.toLowerCase();
-document.querySelectorAll(".card").forEach(c=>{
-c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
-});
+function loadChapters(){
+  chapterSelect.innerHTML = "";
+  const book = DATA[bookSelect.value];
+  for(let ch in book.chapters){
+    chapterSelect.innerHTML += `<option value="${ch}">${book.chapters[ch].name}</option>`;
+  }
+  loadHadiths();
 }
 
-loadHadith();
-</script>
+function loadHadiths(){
+  hadithList.innerHTML = "";
+  const book = DATA[bookSelect.value];
+  const chapter = book.chapters[chapterSelect.value];
 
-</body>
-</html>
+  chapter.hadiths.forEach(h=>{
+    hadithList.innerHTML += `
+      <div class="card">
+        <div class="ar">${h.ar}</div>
+        <div class="bn">${h.bn}</div>
+        <div class="en">${h.en}</div>
+      </div>
+    `;
+  });
+}
+
+bookSelect.onchange = loadChapters;
+chapterSelect.onchange = loadHadiths;
+
+loadBooks();
