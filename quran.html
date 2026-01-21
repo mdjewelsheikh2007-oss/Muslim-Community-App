@@ -8,9 +8,26 @@
 body{font-family:Arial;background:#f2f2f2;margin:0}
 header{background:#0a4d3c;color:white;padding:15px;text-align:center}
 select{width:100%;padding:10px;margin:10px 0}
-#ayah{background:white;padding:15px;border-radius:8px;line-height:2}
-.ar{font-size:22px;direction:rtl;text-align:right}
-.tr{color:#333;margin-top:10px}
+.ayah-box{
+  background:white;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+.ar{
+  font-size:24px;
+  direction:rtl;
+  text-align:right;
+  line-height:2;
+}
+.tr{
+  color:#333;
+  margin-top:8px;
+}
+audio{
+  width:100%;
+  margin-top:6px;
+}
 </style>
 </head>
 
@@ -75,12 +92,26 @@ fetch(`https://api.alquran.cloud/v1/surah/${surah}/${lang}`).then(r=>r.json())
 ]).then(([ar,tr])=>{
 let html="";
 ar.data.ayahs.forEach((a,i)=>{
-html+=`<div class="ar">${a.text}</div>
-<div class="tr">${tr.data.ayahs[i].text}</div><hr>`;
+let ayahNo = String(surah).padStart(3,'0') + String(i+1).padStart(3,'0');
+html+=`
+<div class="ayah-box">
+  <div class="ar">${a.text}</div>
+  <div class="tr">${tr.data.ayahs[i].text}</div>
+
+  <audio controls>
+    <source src="https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayahNo}.mp3">
+  </audio>
+
+  <audio controls>
+    <source src="https://cdn.islamic.network/quran/audio/128/${lang}/${ayahNo}.mp3">
+  </audio>
+</div>
+`;
 });
 document.getElementById("ayah").innerHTML=html;
 });
 }
+
 loadQuran();
 </script>
 
