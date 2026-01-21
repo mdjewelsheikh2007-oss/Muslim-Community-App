@@ -1,47 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Hadith | Muslim Community</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Hadith | Muslim Community</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header class="top">
-    🕌 Muslim Community
+  🕌 Muslim Community
 </header>
 
 <nav class="menu">
-    <a href="index.html">Home</a>
-    <a href="quran.html">Quran</a>
-    <a class="active" href="hadith.html">Hadith</a>
+  <a href="index.html">Home</a>
+  <a href="quran.html">Quran</a>
+  <a class="active" href="hadith.html">Hadith</a>
 </nav>
 
 <main class="container">
+  <h2>📘 Hadith Collection</h2>
 
-    <h2>📘 Hadith Collection</h2>
+  <!-- Book -->
+  <select id="bookSelect"></select>
 
-    <!-- Book Select -->
-    <select id="bookSelect">
-        <option value="bukhari">Sahih Bukhari</option>
-    </select>
+  <!-- Chapter -->
+  <select id="chapterSelect"></select>
 
-    <!-- Chapter Select -->
-    <select id="chapterSelect">
-        <option>Loading chapters...</option>
-    </select>
-
-    <!-- Language -->
-    <select id="langSelect">
-        <option value="ar">Arabic</option>
-        <option value="bn">Bangla</option>
-        <option value="en">English</option>
-    </select>
-
-    <!-- Hadith List -->
-    <div id="hadithList" class="card"></div>
-
+  <!-- Hadith -->
+  <div id="hadithList"></div>
 </main>
 
 <script src="hadith.js"></script>
